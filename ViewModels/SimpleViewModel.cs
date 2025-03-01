@@ -13,10 +13,47 @@ namespace BasicMvvmSample.ViewModels
         public event PropertyChangedEventHandler? PropertyChanged;
 
         //Очень интересная штучька!
-        //CallerMemberName выступает в роли сервиса компилятора, и помогает установить propertyName из свойств
+        //CallerMemberName выступает в роли сервиса компилятора, и помогает установить propertyName из свойства, которое изменилось
         private void RaisePropertyChanged([CallerMemberName] string? propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        private string? _Name; // имя для поля
+
+        public string? Name 
+        {
+            get
+            {
+                return _Name;
+            }
+            set
+            {
+                // нам нужно только обновлять имя на актуальнуе,+ нужно проверить что оно действительно новое
+                if(_Name != value)
+                {
+                    _Name = value;
+
+                    RaisePropertyChanged();
+
+                    RaisePropertyChanged(nameof(Greeting));
+                }
+            }
+        }
+
+        public string Greeting
+        {
+            get
+            {
+                if(string.IsNullOrEmpty(Name))
+                {
+                    return "Привет из Авалонии!!";
+                }
+                else
+                {
+                    return $"Привет {Name}";
+                }
+            }
         }
     }
 }
