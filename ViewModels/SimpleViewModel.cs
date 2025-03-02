@@ -1,6 +1,8 @@
 // Remember to add this to your usings
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Runtime.CompilerServices;
+using System.Threading;
 
 namespace BasicMvvmSample.ViewModels
 {
@@ -17,6 +19,7 @@ namespace BasicMvvmSample.ViewModels
         private void RaisePropertyChanged([CallerMemberName] string? propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            Debug.WriteLine(propertyName);
         }
 
         private string? _Name; // имя для поля
@@ -34,9 +37,16 @@ namespace BasicMvvmSample.ViewModels
                 {
                     _Name = value;
 
-                    RaisePropertyChanged();
+                    //Параметр не передаем, это тоже самое что RaisePropertyChanged(nameof(Name));
+                     
 
-                    RaisePropertyChanged(nameof(Greeting));
+                    // в данном случае мы очень зависимы от этого события,
+                    //  т.к без него не будет ввода в Name и не будет обновления Greeting
+                    //Thread.Sleep(2999);
+                     RaisePropertyChanged();
+                     
+                     RaisePropertyChanged(nameof(Greeting));
+
                 }
             }
         }
@@ -47,13 +57,15 @@ namespace BasicMvvmSample.ViewModels
             {
                 if(string.IsNullOrEmpty(Name))
                 {
-                    return "Привет из Авалонии!!";
+                    Debug.WriteLine(Name);
+                    return "Привет из Авалонии!";
                 }
                 else
                 {
-                    return $"Привет {Name}";
+                    Debug.WriteLine(Name);
+                    return $"Привет {Name}, как здорово что ты здесь!";
                 }
-            }
+            }            
         }
     }
 }
