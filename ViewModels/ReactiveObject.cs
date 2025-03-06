@@ -7,6 +7,14 @@ namespace BasicMvvmSample.ViewModels
     // our base class. Read more about it here: https://www.reactiveui.net
     public class ReactiveViewModel : ReactiveObject
     {
+
+        public ReactiveViewModel()
+        {
+            //добавляем подписку Greeting на Name
+            this.WhenAnyValue(o => o.Name)
+            .Subscribe(o => this.RaisePropertyChanged(nameof(Greeting)));
+        }
+
         private string? _Name; 
 
         public string? Name
